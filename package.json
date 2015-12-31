@@ -14,7 +14,7 @@
   },
   "jspm": {
     "dependencies": {
-      "geiger": "npm:geiger@^1.0.4",
+      "hoverboard": "npm:hoverboard@^3.0.0-alpha",
       "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
       "react": "npm:react@^0.14.5",
       "react-dom": "npm:react-dom@^0.14.5",

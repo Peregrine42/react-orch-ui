@@ -17,7 +17,7 @@ System.config({
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
-    "geiger": "npm:geiger@1.0.4",
+    "hoverboard": "npm:hoverboard@3.0.0-alpha",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "react": "npm:react@0.14.5",
     "react-dom": "npm:react-dom@0.14.5",
@@ -287,9 +287,6 @@ System.config({
       "promise": "npm:promise@7.1.1",
       "ua-parser-js": "npm:ua-parser-js@0.7.10",
       "whatwg-fetch": "npm:whatwg-fetch@0.9.0"
-    },
-    "npm:geiger@1.0.4": {
-      "events": "github:jspm/nodelibs-events@0.1.1"
     },
     "npm:glob@5.0.15": {
       "assert": "github:jspm/nodelibs-assert@0.1.0",
