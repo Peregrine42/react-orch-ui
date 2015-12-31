@@ -1,26 +1,5 @@
 import React from "react"
 
-var instruments = [
-  { 
-    id: 0,
-    name: "Foo Instrument", 
-    amount: 5, reserved: 2, 
-    price: "£399.99" 
-  },
-  { 
-    id: 1,
-    name: "Bar Instrument", 
-    amount: 9, reserved: 1, 
-    price: "£599.99" 
-  },
-  { 
-    id: 2,
-    name: "Bak Instrument", 
-    amount: 1, reserved: 1, 
-    price: "£195.00" 
-  }
-]
-
 class TableHeader extends React.Component {
   constructor() {
     super()
@@ -71,7 +50,7 @@ class MyReactComponent extends React.Component {
     return (
     <table >
       <TableHeader/>
-      <TableBody rows={instruments}/>
+      <TableBody rows={this.props.instruments}/>
     </table>)
   }
 }

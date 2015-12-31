@@ -20,6 +20,7 @@ System.config({
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "react": "npm:react@0.14.5",
     "react-dom": "npm:react-dom@0.14.5",
+    "stackp/promisejs": "github:stackp/promisejs@master",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
     },

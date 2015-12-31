@@ -16,7 +16,8 @@
     "dependencies": {
       "jsx": "github:floatdrop/plugin-jsx@^1.1.0",
       "react": "npm:react@^0.14.5",
-      "react-dom": "npm:react-dom@^0.14.5"
+      "react-dom": "npm:react-dom@^0.14.5",
+      "stackp/promisejs": "github:stackp/promisejs@master"
     },
     "devDependencies": {
       "babel": "npm:babel-core@^5.8.24",
