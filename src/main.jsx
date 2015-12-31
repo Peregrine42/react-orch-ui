@@ -5,6 +5,6 @@ import MyReactComponent from './MyReactComponent.jsx!'
 
 
 ReactDOM.render(
-  <MyReactComponent/>,
+  <MyReactComponent interval={3000}/>,
   document.getElementById('container')
 )

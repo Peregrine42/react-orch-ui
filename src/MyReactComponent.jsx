@@ -67,21 +67,33 @@ class MyReactComponent extends React.Component {
   ajaxInstruments() {
     return promise.get(
       "http://localhost:3000/instruments.json"
-    )
-  }
-  componentDidMount() {
-    this.ajaxInstruments().then(
+    ).then(
       (error, data) => {
         if (!error) {
           let parsed = JSON.parse(data)
           let asInstruments = parsed
-            .map((instrument) => {
-              return new Instrument(instrument)
-            })
+          .map((instrument) => {
+            return new Instrument(instrument)
+          })
+          .sort((instrument1, instrument2) => {
+            if (instrument1.name > instrument2.name) {
+              return 1
+            }
+            if (instrument1.name == instrument2.name) {
+              return 0
+            }
+            return -1
+          })
           this.setState({ instruments: asInstruments })
         }
       }
     )
+  }
+  componentDidMount() {
+    this.ajaxInstruments()
+    setInterval(() => {
+      this.ajaxInstruments()
+    }, this.props.interval)
   }
   render() {
     return (
