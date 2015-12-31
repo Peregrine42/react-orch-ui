@@ -57,7 +57,7 @@ class TableBody extends React.Component {
   }
 }
 
-class MyReactComponent extends React.Component {
+class InstrumentIndex extends React.Component {
   constructor() {
     super()
     this.state = {
@@ -105,4 +105,4 @@ class MyReactComponent extends React.Component {
   }
 }
 
-export default MyReactComponent
+export default InstrumentIndex
