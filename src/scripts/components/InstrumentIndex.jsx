@@ -72,7 +72,9 @@ class InstrumentInspector extends React.Component {
           <input 
             type="text" id="name" 
             value={current.name}
-            onChange={actions.handleChange}
+            onChange={
+              actions.handleChange.bind(null, "name")
+            }
           />
         </div>
         <div>
@@ -80,6 +82,9 @@ class InstrumentInspector extends React.Component {
           <input 
             type="amount" id="amount"
             value={current.amount}
+            onChange={
+              actions.handleChange.bind(null, "amount")
+            }
           />
         </div>
         <div>
@@ -87,6 +92,9 @@ class InstrumentInspector extends React.Component {
           <input 
             type="text" id="reserved"
             value={current.reserved}
+            onChange={
+              actions.handleChange.bind(null, "reserved")
+            }
           />
         </div>
         <div>

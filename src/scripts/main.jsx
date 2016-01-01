@@ -22,17 +22,20 @@ class APIStore {
         state.error = error
         return state
       },
-      handleChange(state, e) {
+      handleChange(state, label, e) {
+        console.log(state)
+        console.log(e)
+        console.log(label)
         let newValue = e.target.value
         let currentID = state.currentID
         let target = 
           state.actions
             .findByID(currentID, state.instruments)
-        target.name = newValue
+        target[label] = newValue
         let baseURL = state.baseURL + "/"
         let targetURL = 
           baseURL + target.id
-        state.actions.post(targetURL, target)
+        state.actions.put(targetURL, target)
         return state
       }
     })
@@ -41,7 +44,7 @@ class APIStore {
       actions: {
         handleChange: this.store.handleChange,
         findByID: this.findByID,
-        post: this.post
+        put: this.put
       },
       currentID: 4,
       baseURL: this.baseURL
@@ -49,8 +52,8 @@ class APIStore {
     setInterval(this.update.bind(this), 3000)
     this.update()
   }
-  post(url, data) {
-    promise.post(url + ".json", data)
+  put(url, data) {
+    promise.put(url + ".json", data)
   }
   findByID(id, instruments) {
     let filtered = instruments.filter((instrument) => {
