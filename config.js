@@ -6,7 +6,8 @@ System.config({
     "optional": [
       "runtime",
       "optimisation.modules.system"
-    ]
+    ],
+    "blacklist": []
   },
   paths: {
     "github:*": "jspm_packages/github/*",
@@ -18,6 +19,7 @@ System.config({
     "babel-runtime": "npm:babel-runtime@5.8.34",
     "core-js": "npm:core-js@1.2.6",
     "hoverboard": "npm:hoverboard@3.0.0-alpha",
+    "jquery": "github:components/jquery@2.1.4",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "react": "npm:react@0.14.5",
     "react-dom": "npm:react-dom@0.14.5",
