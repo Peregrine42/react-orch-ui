@@ -25,10 +25,14 @@ class TableBody extends React.Component {
   }
   
   render() {
+    let actions = this.props.actions
     let rows = this.props.rows
       .map((row) => {
         return (
-          <tr key={row.id}>
+          <tr 
+            key={row.id} 
+            onClick={actions.setID.bind(null, row.id)}
+          >
             <td>{row.id}</td>
             <td>{row.name}</td>
             <td>{row.inStock}</td>
@@ -49,7 +53,10 @@ class InstrumentTable extends React.Component {
     return (
       <table >
         <TableHeader/>
-        <TableBody rows={this.props.instruments}/>
+        <TableBody 
+          rows={this.props.instruments}
+          actions={this.props.actions}
+        />
       </table>
     )
   }
@@ -93,7 +100,9 @@ class InstrumentInspector extends React.Component {
             type="text" id="reserved"
             value={current.reserved}
             onChange={
-              actions.handleChange.bind(null, "reserved")
+              actions.handleChange.bind(
+                null, "reserved"
+              )
             }
           />
         </div>
@@ -105,7 +114,12 @@ class InstrumentInspector extends React.Component {
           <label htmlFor="name">description:</label>
           <input 
             type="text" id="description"
-            value="{{rows[activeRow].description}}"
+            value={current.description}
+            onChange={
+              actions.handleChange.bind(
+                null, "description"
+              )
+            }
           />
         </div>
       </div>
@@ -125,6 +139,7 @@ class InstrumentIndex extends React.Component {
       <div>
         <InstrumentTable 
           instruments={this.props.instruments}
+          actions={this.props.actions}
         />
       <InstrumentInspector 
         currentID={this.props.currentID} 

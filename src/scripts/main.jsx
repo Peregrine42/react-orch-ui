@@ -5,7 +5,7 @@ import promise from 'stackp/promisejs/promise.js'
 
 import InstrumentIndex 
   from './components/InstrumentIndex.jsx!'
-  
+
 class APIStore {
   constructor() {
     this.baseURL = 
@@ -22,10 +22,11 @@ class APIStore {
         state.error = error
         return state
       },
+      setID(state, id, e) {
+        state.currentID = id
+        return state
+      },
       handleChange(state, label, e) {
-        console.log(state)
-        console.log(e)
-        console.log(label)
         let newValue = e.target.value
         let currentID = state.currentID
         let target = 
@@ -44,9 +45,10 @@ class APIStore {
       actions: {
         handleChange: this.store.handleChange,
         findByID: this.findByID,
-        put: this.put
+        put: this.put,
+        setID: this.store.setID
       },
-      currentID: 4,
+      currentID: -1,
       baseURL: this.baseURL
     })
     setInterval(this.update.bind(this), 3000)
