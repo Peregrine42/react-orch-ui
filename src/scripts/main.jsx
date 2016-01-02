@@ -15,6 +15,23 @@ class APIStore {
       init(state, init_state) {
         return init_state
       },
+      update(state) {
+        if (state.timeouts.userFinishedInput == null) {
+          promise.get(
+            state.baseURL + ".json"
+          ).then((error, data) => {
+            if (error) {
+              return state.actions.error(error)
+            }
+            let parsed = JSON.parse(data)
+            let validated = parsed.map(
+              state.actions.validInstrument
+            )
+            state.actions.instruments(validated)
+          })
+        }
+        return state
+      },
       clearUserTimeout(state) {
         clearTimeout(state.timeouts.userFinishedInput)
         state.timeouts.userFinishedInput = null
@@ -78,7 +95,7 @@ class APIStore {
             setTimeout(() => {
               state.actions.put(targetURL, target)
               state.actions.clearUserTimeout()
-            }, 2000)
+            }, 5000)
         }
         return state
       }
@@ -91,6 +108,7 @@ class APIStore {
         put: this.put,
         setID: this.store.setID,
         validInstrument: this.validInstrument,
+        error: this.store.error,
         instruments: this.store.instruments,
         clearUserTimeout: this.store.clearUserTimeout
       },
@@ -100,8 +118,8 @@ class APIStore {
       currentID: -1,
       baseURL: this.baseURL
     })
-    setInterval(this.update.bind(this), 3000)
-    this.update()
+    setInterval(this.store.update, 3000)
+    this.store.update()
   }
   put(url, data) {
     promise.put(url + ".json", data)
@@ -119,25 +137,9 @@ class APIStore {
       name: data.name,
       amount: data.amount,
       reserved: data.reserved,
-      inStock: (
-        parseInt(data.amount) - 
-        parseInt(data.reserved)
-      ),
       price: data.price,
       description: data.description
     }
-  }
-  update() {
-    return promise.get(
-      this.baseURL + ".json"
-    ).then((error, data) => {
-      if (error) {
-        return this.store.error(error)
-      }
-      let parsed = JSON.parse(data)
-      let validated = parsed.map(this.validInstrument)
-      this.store.instruments(validated)
-    })
   }
 }
 

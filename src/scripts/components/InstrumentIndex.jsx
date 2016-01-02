@@ -145,15 +145,21 @@ class InstrumentIndex extends React.Component {
     }
   }
   render() {
+    let instruments = this.props.instruments
+      .map((instrument) => {
+        instrument.inStock = 
+          instrument.amount - instrument.reserved
+        return instrument
+      })
     return (
       <div>
         <InstrumentTable 
-          instruments={this.props.instruments}
+          instruments={instruments}
           actions={this.props.actions}
         />
       <InstrumentInspector 
         currentID={this.props.currentID} 
-        instruments={this.props.instruments}
+        instruments={instruments}
         actions={this.props.actions}
       />
       </div>
