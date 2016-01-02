@@ -127,22 +127,17 @@ class APIStore {
       description: data.description
     }
   }
-  updateStore(data) {
-    let validated = data.map(this.validInstrument)
-    this.store.instruments(validated)
-  }
   update() {
-    if (state.timeouts.userFinishedInput == null) {
-      return promise.get(
-        this.baseURL + ".json"
-      ).then((error, data) => {
-        if (error) {
-          return this.store.error(error)
-        }
-        let parsed = JSON.parse(data)
-        this.updateStore(parsed)
-      })
-    }
+    return promise.get(
+      this.baseURL + ".json"
+    ).then((error, data) => {
+      if (error) {
+        return this.store.error(error)
+      }
+      let parsed = JSON.parse(data)
+      let validated = parsed.map(this.validInstrument)
+      this.store.instruments(validated)
+    })
   }
 }
 
