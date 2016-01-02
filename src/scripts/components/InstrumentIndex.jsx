@@ -9,10 +9,9 @@ class TableHeader extends React.Component {
     return (
       <thead>
         <tr>
-          <th>id</th>
           <th>name</th>
+          <th>price (£)</th>
           <th>amount (in stock)</th>
-          <th>price</th>
         </tr>
       </thead>
     )
@@ -33,10 +32,9 @@ class TableBody extends React.Component {
             key={row.id} 
             onClick={actions.setID.bind(null, row.id)}
           >
-            <td>{row.id}</td>
             <td>{row.name}</td>
-            <td>{row.inStock}</td>
             <td>{row.price}</td>
+            <td>{row.inStock}</td>
           </tr>
         )
     })
@@ -85,6 +83,30 @@ class InstrumentInspector extends React.Component {
           />
         </div>
         <div>
+          <label htmlFor="name">description:</label>
+          <input 
+            type="text" id="description"
+            value={current.description}
+            onChange={
+              actions.handleChange.bind(
+                null, "description"
+              )
+            }
+          />
+        </div>
+        <div>
+          <label htmlFor="price">price (£):</label>
+          <input 
+            type="text" id="price"
+            value={current.price}
+            onChange={
+              actions.handleChange.bind(
+                null, "price"
+              )
+            }
+          />
+        </div>
+        <div>
           <label htmlFor="amount">amount:</label>
           <input 
             type="amount" id="amount"
@@ -109,18 +131,6 @@ class InstrumentInspector extends React.Component {
         <div>
           <label htmlFor="inStock">in stock:</label>
           <span> {current.inStock}</span>
-        </div>
-        <div>
-          <label htmlFor="name">description:</label>
-          <input 
-            type="text" id="description"
-            value={current.description}
-            onChange={
-              actions.handleChange.bind(
-                null, "description"
-              )
-            }
-          />
         </div>
       </div>
     )
