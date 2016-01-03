@@ -7,8 +7,11 @@ class InstrumentInspector extends React.Component {
     let value = e.target.value
     if (label === "price") { 
       this.props.actions.format(false)
+      value = parseFloat(value)
+      if (!value || value <= 0) {
+        value = 0
+      }
     }
-    
     if (label === "amount") {
       value = parseInt(value)
       if (!value || value <= 0) {

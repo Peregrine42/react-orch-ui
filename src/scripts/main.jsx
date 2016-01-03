@@ -87,7 +87,7 @@ class APIStore {
       format: true
     })
     setInterval(
-      this.triggerUpdateFromServer.bind(this), 3000
+      this.triggerUpdateFromServer.bind(this), 1000
     )
     this.triggerUpdateFromServer()
   }
@@ -122,7 +122,7 @@ class APIStore {
       let timerID = setTimeout(() => {
         this.update(target)
         apiStore.store.setTimer(undefined)
-      }, 3000)
+      }, 1000)
       apiStore.store.setTimer(timerID)
     }
   }
@@ -142,10 +142,11 @@ class APIStore {
         .then(
           this.handleUpdateFromServer.bind(this, index)
         )
+      let id = this.store().currentID
+      if (id > -1) { this.read(id) }
     }
   }
-  setID(id, e) {
-    this.store.setCurrentID(id)
+  read(id) {
     promise.get(
       this.type.baseURL() + "/" + id + ".json"
     )
@@ -157,6 +158,10 @@ class APIStore {
         id, validated
       )
     })
+  }
+  setID(id, e) {
+    this.store.setCurrentID(id)
+    this.read(id)
   }
 }
 

@@ -29,13 +29,16 @@ export default class TableBody extends React.Component {
             <td>{row.name}</td>
             <td>{row.formattedPrice}</td>
             <td>{this.stockLevels(row)}</td>
-            <td onClick={
-                this.destroy.bind(
-                  this, row.id
-                )
-              }
-            >
-              <a>delete</a>
+            <td>
+              <input 
+                type="button"
+                onClick={
+                  this.destroy.bind(
+                    this, row.id
+                  )
+                }
+                value="delete"
+              ></input>
             </td>
           </tr>
         )
