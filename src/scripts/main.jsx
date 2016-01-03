@@ -54,7 +54,6 @@ class APIStore {
       },
       setTimer(state, id) {
         state.timer = id
-        console.log(state)
         return state
       },
       setID(state, id, e) {
@@ -125,7 +124,6 @@ class APIStore {
     )
   }
   update(data) {
-    console.log(data)
     promise.put(
       `${Instrument.baseURL()}/${data.id}.json`, data
     )

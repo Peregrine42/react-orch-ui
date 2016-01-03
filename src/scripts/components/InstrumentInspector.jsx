@@ -7,12 +7,25 @@ class InstrumentInspector extends React.Component {
       format: false
     }
   }
-  handleChange(label, e) {
+  handleChange(label, target, e) {
+    e.preventDefault()
+    e.stopPropagation()
+    let value = e.target.value
     if (label === "price") { 
       this.state.format = true
     }
+    if (label === "amount") {
+      if (parseInt(value) < 0) {
+        return false
+      }
+    }
+    if (label === "reserved") {
+      if (parseInt(value) > target.amount) {
+        return false
+      }
+    }
     this.delayedChange(
-      label, e.target.value
+      label, value
     )
   }
   delayedChange(label, newValue) {
@@ -46,7 +59,9 @@ class InstrumentInspector extends React.Component {
             type="text" id="name" 
             value={current.name}
             onChange={
-              this.handleChange.bind(this, "name")
+              this.handleChange.bind(
+                this, "name", current
+              )
             }
           />
         </div>
@@ -57,7 +72,7 @@ class InstrumentInspector extends React.Component {
             value={current.description}
             onChange={
               this.handleChange.bind(
-                this, "description"
+                this, "description", current
               )
             }
           />
@@ -69,7 +84,7 @@ class InstrumentInspector extends React.Component {
             value={this.price(current)}
             onChange={
               this.handleChange.bind(
-                this, "price"
+                this, "price", current
               )
             }
           />
@@ -80,7 +95,9 @@ class InstrumentInspector extends React.Component {
             type="amount" id="amount"
             value={current.amount}
             onChange={
-              this.handleChange.bind(this, "amount")
+              this.handleChange.bind(
+                this, "amount", current
+              )
             }
           />
         </div>
@@ -91,7 +108,7 @@ class InstrumentInspector extends React.Component {
             value={current.reserved}
             onChange={
               this.handleChange.bind(
-                this, "reserved"
+                this, "reserved", current
               )
             }
           />
