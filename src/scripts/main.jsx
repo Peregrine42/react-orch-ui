@@ -55,7 +55,6 @@ class APIStore {
         return state
       },
       updateRow(state, id, newRow) {
-        console.log(newRow)
         let index = state.actions.indexFromID(
           id, state.rows
         )
@@ -109,7 +108,6 @@ class APIStore {
     )
   }
   update(data) {
-    console.log(data)
     promise.put(
       `${Instrument.baseURL()}/${data.id}.json`, data
     )

@@ -5,17 +5,18 @@ class InstrumentInspector extends React.Component {
     e.preventDefault()
     e.stopPropagation()
     let value = e.target.value
-    value = parseInt(value)
     if (label === "price") { 
       this.props.actions.format(false)
     }
     
     if (label === "amount") {
+      value = parseInt(value)
       if (!value || value <= 0) {
         value = 0
       }
     }
     if (label === "reserved") {
+      value = parseInt(value)
       if (
         !value || 
         value <= 0
