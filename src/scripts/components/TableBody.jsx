@@ -1,17 +1,22 @@
 import React from "react"
 
 export default class TableBody extends React.Component {
-  render() {
+  handleClick(id) {
     let actions = this.props.actions
+    if (this.props.currentID != id) {
+      actions.setID(id)
+    }
+  }
+  render() {
     let rows = this.props.rows
       .map((row) => {
         return (
           <tr 
             key={row.id} 
-            onClick={actions.setID.bind(null, row.id)}
+            onClick={this.handleClick.bind(this, row.id)}
           >
             <td>{row.name}</td>
-            <td>{row.price}</td>
+            <td>{row.formattedPrice}</td>
             <td>{row.inStock}</td>
           </tr>
         )

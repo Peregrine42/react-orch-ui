@@ -10,6 +10,7 @@ class InstrumentTable extends React.Component {
         <TableBody 
           rows={this.props.instruments}
           actions={this.props.actions}
+          currentID={this.props.currentID}
         />
       </table>
     )

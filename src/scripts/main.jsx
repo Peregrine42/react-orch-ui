@@ -6,35 +6,17 @@ import _ from 'lodash'
 
 import InstrumentIndex 
   from './components/InstrumentIndex.jsx!'
-
-class Instrument {
-  static valid(data) {
-    return {
-      id: data.id,
-      name: data.name,
-      amount: data.amount,
-      reserved: data.reserved,
-      price: data.price,
-      description: data.description
-    }
-  }
-  static baseURL() {
-    return (
-      "http://localhost:3000/instruments"
-    )
-  }
-}
+import Instrument from "./components/Instrument.js"
 
 class APIStore {
   constructor() {
+    this.type = Instrument
     this.store = Hoverboard({
       init(state, init_state) {
         return init_state
       },
       update(state) {
-        if (
-          state.timeouts.disableServerActions == null
-        ) {
+        if (!state.timer) {
           state.actions.readAll()
             .then((error, data) => {
               if (error) {
@@ -42,7 +24,7 @@ class APIStore {
               }
               let parsed = JSON.parse(data)
               let validated = parsed.map(
-                Instrument.valid
+                state.type.valid
               )
               state.actions.rows(validated)
             })
@@ -51,23 +33,15 @@ class APIStore {
       },
       clearUpdateTimeout(state) {
         clearTimeout(
-          state.timeouts.disableServerActions
+          state.timeouts.pauseUpdates
         )
-        state.timeouts.disableServerActions = null
+        state.timeouts.pauseUpdates = undefined
         return state
       },
       rows(state, data) {
-        let newState = data.map((newData) => {
-          let oldData = 
-            state.actions.findByID(
-              newData.id, state.rows
-            )
-          if (!oldData) { return newData }
-          return (_.extend(newData, oldData, 
-            (v, o) => {
-              return _.isUndefined(v) ? o : v
-            }))
-        })
+        let newState = data.map(state.type.update.bind(
+          null, state.rows
+        ))
         state.rows = _
           .sortBy(newState, (i) => {
             return i.name
@@ -78,41 +52,38 @@ class APIStore {
         state.error = error
         return state
       },
+      setTimer(state, id) {
+        state.timer = id
+        console.log(state)
+        return state
+      },
       setID(state, id, e) {
         state.currentID = id
         promise.get(
-          Instrument.baseURL() + "/" + id + ".json"
+          state.type.baseURL() + "/" + id + ".json"
         )
           .then((error, data) => {
             let parsed = JSON.parse(data)
             let validated = 
-              Instrument.valid(parsed)
-            let new_rows = state.rows
-              .map((row) => {
-                if (row.id === state.currentID)
-                {
-                  return validated
-                }
-                return row
-              })
-            state.actions.rows(new_rows)
+              state.type.valid(parsed)
+            state.actions.updateRow(
+              state.currentID, validated
+            )
           })
         return state
       },
-      handleChange(state, label, e) {
-        let newValue = e.target.value
-        let currentID = state.currentID
-        let target = 
-          state.actions
-            .findByID(currentID, state.rows)
-        target[label] = newValue
-        let baseURL = Instrument.baseURL() + "/"
-        let targetURL = 
-          baseURL + target.id
+      updateRow(state, id, newRow) {
+        let index = state.actions.indexFromID(
+          id, state.rows
+        )
+        state.rows[index] = newRow
+        return state
+      },
+      scheduleUpdate(state, target) {
         if (
-          state.timeouts.disableServerActions == null
+          _.isUndefined(state.timeouts.pauseUpdates)
         ) {
-          state.timeouts.disableServerActions = 
+          state.timeouts.pauseUpdates = 
             setTimeout(() => {
               state.actions.update(target)
               state.actions.clearUpdateTimeout()
@@ -126,18 +97,24 @@ class APIStore {
       actions: {
         readAll: this.readAll,
         update: this.update,
+        scheduleUpdate: this.scheduleUpdate,
         handleChange: this.store.handleChange,
-        findByID: this.findByID,
         setID: this.store.setID,
         error: this.store.error,
         rows: this.store.rows,
         clearUpdateTimeout: 
-          this.store.clearUpdateTimeout
+          this.store.clearUpdateTimeout,
+        updateRow: this.store.updateRow,
+        findByID: this.type.findByID,
+        indexFromID: this.type.indexFromID,
+        prerender: this.type.prerender,
+        setTimer: this.store.setTimer
       },
       timeouts: {
-        disableServerActions: null,
+        pauseUpdates: undefined,
       },
       currentID: -1,
+      type: this.type
     })
     setInterval(this.store.update, 3000)
     this.store.update()
@@ -148,16 +125,20 @@ class APIStore {
     )
   }
   update(data) {
+    console.log(data)
     promise.put(
       `${Instrument.baseURL()}/${data.id}.json`, data
     )
   }
-  findByID(id, rows) {
-    let filtered = rows.filter((row) => {
-      return id === row.id
-    })
-    if (filtered.length > 0) { return filtered[0] }
-    return false
+  scheduleUpdate(target) {
+    let state = apiStore.store()
+    if (!state.timer) {
+      let timerID = setTimeout(() => {
+        this.update(target)
+        apiStore.store.setTimer(undefined)
+      }, 3000)
+      apiStore.store.setTimer(timerID)
+    }
   }
 }
 
@@ -168,6 +149,9 @@ apiStore.store.getState((props) => {
       currentID={props.currentID}
       instruments={props.rows}
       actions={props.actions}
+      timeouts={props.timeouts}
+      type={props.type}
+      timer={props.timer}
     />,
     document.getElementById('container')
   )

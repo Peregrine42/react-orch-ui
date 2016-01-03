@@ -1,13 +1,41 @@
 import React from "react"
 
-export default class InstrumentInspector extends React.Component {
-  render() {
-    var id = this.props.currentID
-    var actions = this.props.actions
-    var current = actions.findByID(
-      id, this.props.instruments
+class InstrumentInspector extends React.Component {
+  constructor(...args) {
+    super(...args)
+    this.state = { 
+      format: false
+    }
+  }
+  handleChange(label, e) {
+    if (label === "price") { 
+      this.state.format = true
+    }
+    this.delayedChange(
+      label, e.target.value
     )
-    if (!(current instanceof Object) || current.error) {
+  }
+  delayedChange(label, newValue) {
+    let currentID = this.props.currentID
+    let target = this.props.actions.findByID(
+      currentID, this.props.rows
+    )
+    target[label] = newValue
+    if (!this.props.timer) {
+      let timerID =
+        this.props.actions.scheduleUpdate(target)
+    } 
+    this.props.actions.updateRow(target.id, target)
+  }
+  price(row) {
+    if (this.state.format) { return row.price } 
+    else { return row.formattedPrice }
+  }
+  render() {
+    let id = this.props.currentID
+    let actions = this.props.actions
+    let current = actions.findByID(id, this.props.rows)
+    if (!current) {
       return <div/>
     }
     return(
@@ -18,7 +46,7 @@ export default class InstrumentInspector extends React.Component {
             type="text" id="name" 
             value={current.name}
             onChange={
-              actions.handleChange.bind(null, "name")
+              this.handleChange.bind(this, "name")
             }
           />
         </div>
@@ -28,8 +56,8 @@ export default class InstrumentInspector extends React.Component {
             type="text" id="description"
             value={current.description}
             onChange={
-              actions.handleChange.bind(
-                null, "description"
+              this.handleChange.bind(
+                this, "description"
               )
             }
           />
@@ -38,10 +66,10 @@ export default class InstrumentInspector extends React.Component {
           <label htmlFor="price">price (£):</label>
           <input 
             type="text" id="price"
-            value={current.price}
+            value={this.price(current)}
             onChange={
-              actions.handleChange.bind(
-                null, "price"
+              this.handleChange.bind(
+                this, "price"
               )
             }
           />
@@ -52,7 +80,7 @@ export default class InstrumentInspector extends React.Component {
             type="amount" id="amount"
             value={current.amount}
             onChange={
-              actions.handleChange.bind(null, "amount")
+              this.handleChange.bind(this, "amount")
             }
           />
         </div>
@@ -62,8 +90,8 @@ export default class InstrumentInspector extends React.Component {
             type="text" id="reserved"
             value={current.reserved}
             onChange={
-              actions.handleChange.bind(
-                null, "reserved"
+              this.handleChange.bind(
+                this, "reserved"
               )
             }
           />
@@ -76,3 +104,5 @@ export default class InstrumentInspector extends React.Component {
     )
   }
 }
+
+export default InstrumentInspector

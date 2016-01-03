@@ -6,22 +6,22 @@ import InstrumentInspector
 class InstrumentIndex extends React.Component {
   render() {
     let instruments = this.props.instruments
-      .map((instrument) => {
-        instrument.inStock = 
-          instrument.amount - instrument.reserved
-        return instrument
-      })
+    instruments = instruments
+      .map(this.props.actions.prerender)
     return (
       <div>
         <InstrumentTable 
+          currentID={this.props.currentID} 
           instruments={instruments}
           actions={this.props.actions}
         />
-      <InstrumentInspector 
-        currentID={this.props.currentID} 
-        instruments={instruments}
-        actions={this.props.actions}
-      />
+        <InstrumentInspector 
+          currentID={this.props.currentID} 
+          rows={instruments}
+          actions={this.props.actions}
+          type={this.props.type}
+          timer={this.props.timer}
+        />
       </div>
     )
   }
