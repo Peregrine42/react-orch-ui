@@ -7,6 +7,9 @@ export default class TableBody extends React.Component {
       actions.setID(id)
     }
   }
+  stockLevels(current) {
+    return `${current.inStock} (${current.reserved})`
+  }
   render() {
     let rows = this.props.rows
       .map((row) => {
@@ -17,7 +20,7 @@ export default class TableBody extends React.Component {
           >
             <td>{row.name}</td>
             <td>{row.formattedPrice}</td>
-            <td>{row.inStock}</td>
+            <td>{this.stockLevels(row)}</td>
           </tr>
         )
     })

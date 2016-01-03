@@ -11,7 +11,7 @@ export default class TableHeader extends React.Component {
         <tr>
           <th>name</th>
           <th>price (£)</th>
-          <th>amount (in stock)</th>
+          <th>in stock (reserved)</th>
         </tr>
       </thead>
     )
