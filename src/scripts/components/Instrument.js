@@ -11,6 +11,9 @@ export default class Instrument {
       description: data.description
     }
   }
+  static sorter(instrument) {
+    return instrument.name
+  }
   static prerender(instrument) {
     instrument.inStock = 
       instrument.amount - instrument.reserved

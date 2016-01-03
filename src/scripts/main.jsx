@@ -15,37 +15,12 @@ class APIStore {
       init(state, init_state) {
         return init_state
       },
-      update(state) {
-        if (!state.timer) {
-          state.actions.readAll()
-            .then((error, data) => {
-              if (error) {
-                return state.actions.error(error)
-              }
-              let parsed = JSON.parse(data)
-              let validated = parsed.map(
-                state.type.valid
-              )
-              state.actions.rows(validated)
-            })
-        }
-        return state
-      },
-      clearUpdateTimeout(state) {
-        clearTimeout(
-          state.timeouts.pauseUpdates
-        )
-        state.timeouts.pauseUpdates = undefined
-        return state
-      },
       rows(state, data) {
         let newState = data.map(state.type.update.bind(
           null, state.rows
         ))
         state.rows = _
-          .sortBy(newState, (i) => {
-            return i.name
-          })
+          .sortBy(newState, state.type.sorter)
         return state
       },
       error(state, error) {
@@ -56,19 +31,8 @@ class APIStore {
         state.timer = id
         return state
       },
-      setID(state, id, e) {
+      setCurrentID(state, id) {
         state.currentID = id
-        promise.get(
-          state.type.baseURL() + "/" + id + ".json"
-        )
-          .then((error, data) => {
-            let parsed = JSON.parse(data)
-            let validated = 
-              state.type.valid(parsed)
-            state.actions.updateRow(
-              state.currentID, validated
-            )
-          })
         return state
       },
       updateRow(state, id, newRow) {
@@ -76,18 +40,6 @@ class APIStore {
           id, state.rows
         )
         state.rows[index] = newRow
-        return state
-      },
-      scheduleUpdate(state, target) {
-        if (
-          _.isUndefined(state.timeouts.pauseUpdates)
-        ) {
-          state.timeouts.pauseUpdates = 
-            setTimeout(() => {
-              state.actions.update(target)
-              state.actions.clearUpdateTimeout()
-            }, 2000)
-        }
         return state
       }
     })
@@ -97,17 +49,14 @@ class APIStore {
         readAll: this.readAll,
         update: this.update,
         scheduleUpdate: this.scheduleUpdate,
-        handleChange: this.store.handleChange,
-        setID: this.store.setID,
+        setID: this.setID.bind(this),
         error: this.store.error,
         rows: this.store.rows,
-        clearUpdateTimeout: 
-          this.store.clearUpdateTimeout,
         updateRow: this.store.updateRow,
+        setTimer: this.store.setTimer,
         findByID: this.type.findByID,
         indexFromID: this.type.indexFromID,
-        prerender: this.type.prerender,
-        setTimer: this.store.setTimer
+        prerender: this.type.prerender
       },
       timeouts: {
         pauseUpdates: undefined,
@@ -115,8 +64,10 @@ class APIStore {
       currentID: -1,
       type: this.type
     })
-    setInterval(this.store.update, 3000)
-    this.store.update()
+    setInterval(
+      this.triggerUpdateFromServer.bind(this), 3000
+    )
+    this.triggerUpdateFromServer()
   }
   readAll() {
     return promise.get(
@@ -137,6 +88,36 @@ class APIStore {
       }, 3000)
       apiStore.store.setTimer(timerID)
     }
+  }
+  handleUpdateFromServer(error, data) {
+    if (error) {
+      return this.store.error(error)
+    }
+    let parsed = JSON.parse(data)
+    let validated = parsed.map(
+      this.type.valid
+    )
+    this.store.rows(validated)
+  }
+  triggerUpdateFromServer() {
+    if (!this.store().timer) {
+      this.readAll()
+        .then(this.handleUpdateFromServer.bind(this))
+    }
+  }
+  setID(id, e) {
+    this.store.setCurrentID(id)
+    promise.get(
+      this.type.baseURL() + "/" + id + ".json"
+    )
+    .then((error, data) => {
+      let parsed = JSON.parse(data)
+      let validated = 
+        this.type.valid(parsed)
+      this.store.updateRow(
+        id, validated
+      )
+    })
   }
 }
 

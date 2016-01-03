@@ -14,6 +14,7 @@ class InstrumentInspector extends React.Component {
     if (label === "price") { 
       this.state.format = true
     }
+    
     if (label === "amount") {
       if (parseInt(value) < 0) {
         return false
