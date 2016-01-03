@@ -2,6 +2,7 @@ import React from "react"
 import InstrumentTable from './InstrumentTable.jsx!'
 import InstrumentInspector 
   from './InstrumentInspector.jsx!'
+import CreateButton from './CreateButton.jsx!'
 
 class InstrumentIndex extends React.Component {
   render() {
@@ -10,6 +11,9 @@ class InstrumentIndex extends React.Component {
       .map(this.props.actions.prerender)
     return (
       <div>
+        <CreateButton
+          actions={this.props.actions}
+        />
         <InstrumentTable 
           currentID={this.props.currentID} 
           instruments={instruments}

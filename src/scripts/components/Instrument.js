@@ -1,6 +1,9 @@
 import _ from 'lodash'
 
 export default class Instrument {
+  static blank() {
+    
+  }
   static valid(data) {
     return {
       id: data.id,

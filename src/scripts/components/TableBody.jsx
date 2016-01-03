@@ -7,6 +7,14 @@ export default class TableBody extends React.Component {
       actions.setID(id)
     }
   }
+  destroy(id, e) {
+    e.stopPropagation()
+    e.preventDefault()
+    let userDecision = confirm(
+      "Are you sure you would like to delete this item?"
+    )
+    if (userDecision) { this.props.actions.destroy(id) }
+  }
   stockLevels(current) {
     return `${current.inStock} (${current.reserved})`
   }
@@ -21,6 +29,14 @@ export default class TableBody extends React.Component {
             <td>{row.name}</td>
             <td>{row.formattedPrice}</td>
             <td>{this.stockLevels(row)}</td>
+            <td onClick={
+                this.destroy.bind(
+                  this, row.id
+                )
+              }
+            >
+              <a>delete</a>
+            </td>
           </tr>
         )
     })

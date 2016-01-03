@@ -15,16 +15,30 @@ class APIStore {
       init(state, init_state) {
         return init_state
       },
+      destroy(state, id) {
+        let index = state.type.indexFromID(
+          id, state.rows
+        )
+        if (index > -1) {
+          state.rows.splice(index, 1)
+        }
+        return state
+      },
       format(state, format) {
         state.format = format
         return state
       },
-      rows(state, data) {
+      rows(state, data, id) {
         let newState = data.map(state.type.update.bind(
           null, state.rows
         ))
         state.rows = _
           .sortBy(newState, state.type.sorter)
+        let index = state.actions.indexFromID(
+          id, state.rows
+        )
+        if (!id) { id = state.currentID }
+        state.currentID = id
         return state
       },
       error(state, error) {
@@ -41,6 +55,7 @@ class APIStore {
         return state
       },
       updateRow(state, id, newRow) {
+        console.log(newRow)
         let index = state.actions.indexFromID(
           id, state.rows
         )
@@ -51,18 +66,19 @@ class APIStore {
     this.store.init({
       rows: [],
       actions: {
+        createRow: this.createRow.bind(this),
         readAll: this.readAll,
         update: this.update,
+        destroy: this.destroy.bind(this),
         scheduleUpdate: this.scheduleUpdate,
         setID: this.setID.bind(this),
-        error: this.store.error,
         rows: this.store.rows,
         updateRow: this.store.updateRow,
         setTimer: this.store.setTimer,
         findByID: this.type.findByID,
         indexFromID: this.type.indexFromID,
         prerender: this.type.prerender,
-        format: this.store.format
+        format: this.store.format,
       },
       timeouts: {
         pauseUpdates: undefined,
@@ -76,15 +92,31 @@ class APIStore {
     )
     this.triggerUpdateFromServer()
   }
+  createRow() {
+    promise.post(
+      Instrument.baseURL() + ".json"
+    ).then((error, data) => {
+      if (!error) {
+        let parsed = JSON.parse(data)
+        let valid = this.type.valid(parsed)
+        this.triggerUpdateFromServer(valid.id)
+      }
+    })
+  }
   readAll() {
     return promise.get(
       Instrument.baseURL() + ".json"
     )
   }
   update(data) {
+    console.log(data)
     promise.put(
       `${Instrument.baseURL()}/${data.id}.json`, data
     )
+  }
+  destroy(id) {
+    promise.del(`${Instrument.baseURL()}/${id}.json`)
+    this.store.destroy(id)
   }
   scheduleUpdate(target) {
     let state = apiStore.store()
@@ -96,20 +128,22 @@ class APIStore {
       apiStore.store.setTimer(timerID)
     }
   }
-  handleUpdateFromServer(error, data) {
+  handleUpdateFromServer(index, error, data) {
     if (error) {
-      return this.store.error(error)
+      return
     }
     let parsed = JSON.parse(data)
     let validated = parsed.map(
       this.type.valid
     )
-    this.store.rows(validated)
+    this.store.rows(validated, index)
   }
-  triggerUpdateFromServer() {
+  triggerUpdateFromServer(index) {
     if (!this.store().timer) {
       this.readAll()
-        .then(this.handleUpdateFromServer.bind(this))
+        .then(
+          this.handleUpdateFromServer.bind(this, index)
+        )
     }
   }
   setID(id, e) {
