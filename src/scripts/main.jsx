@@ -15,6 +15,10 @@ class APIStore {
       init(state, init_state) {
         return init_state
       },
+      format(state, format) {
+        state.format = format
+        return state
+      },
       rows(state, data) {
         let newState = data.map(state.type.update.bind(
           null, state.rows
@@ -32,6 +36,7 @@ class APIStore {
         return state
       },
       setCurrentID(state, id) {
+        state.format = true
         state.currentID = id
         return state
       },
@@ -56,13 +61,15 @@ class APIStore {
         setTimer: this.store.setTimer,
         findByID: this.type.findByID,
         indexFromID: this.type.indexFromID,
-        prerender: this.type.prerender
+        prerender: this.type.prerender,
+        format: this.store.format
       },
       timeouts: {
         pauseUpdates: undefined,
       },
       currentID: -1,
-      type: this.type
+      type: this.type,
+      format: true
     })
     setInterval(
       this.triggerUpdateFromServer.bind(this), 3000
@@ -131,6 +138,7 @@ apiStore.store.getState((props) => {
       timeouts={props.timeouts}
       type={props.type}
       timer={props.timer}
+      format={props.format}
     />,
     document.getElementById('container')
   )

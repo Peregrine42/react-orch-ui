@@ -1,18 +1,12 @@
 import React from "react"
 
 class InstrumentInspector extends React.Component {
-  constructor(...args) {
-    super(...args)
-    this.state = { 
-      format: false
-    }
-  }
   handleChange(label, target, e) {
     e.preventDefault()
     e.stopPropagation()
     let value = e.target.value
     if (label === "price") { 
-      this.state.format = true
+      this.props.actions.format(false)
     }
     
     if (label === "amount") {
@@ -42,8 +36,12 @@ class InstrumentInspector extends React.Component {
     this.props.actions.updateRow(target.id, target)
   }
   price(row) {
-    if (this.state.format) { return row.price } 
-    else { return row.formattedPrice }
+    if (this.props.format) { 
+      return row.formattedPrice 
+    } 
+    else { 
+      return row.price 
+    }
   }
   render() {
     let id = this.props.currentID

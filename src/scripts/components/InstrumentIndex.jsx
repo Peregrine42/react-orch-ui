@@ -21,6 +21,7 @@ class InstrumentIndex extends React.Component {
           actions={this.props.actions}
           type={this.props.type}
           timer={this.props.timer}
+          format={this.props.format}
         />
       </div>
     )
