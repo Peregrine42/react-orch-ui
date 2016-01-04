@@ -20,7 +20,9 @@
       "lodash": "npm:lodash@^3.10.1",
       "react": "npm:react@^0.14.5",
       "react-dom": "npm:react-dom@^0.14.5",
-      "react-router": "npm:react-router@^1.0.3",
+      "react-router5": "npm:react-router5@^1.0.1",
+      "router5": "npm:router5@^1.3.0",
+      "router5-history": "npm:router5-history@^1.0.1",
       "stackp/promisejs": "github:stackp/promisejs@master"
     },
     "devDependencies": {

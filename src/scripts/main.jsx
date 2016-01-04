@@ -1,6 +1,8 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router, Route, Link } from 'react-router'
+import { Router5 } from 'router5'
+import { RouterProvider } from 'react-router5';
+import historyPlugin from 'router5-history';
 import Hoverboard from "hoverboard"
 import promise from 'stackp/promisejs/promise.js'
 import _ from 'lodash'
@@ -23,6 +25,7 @@ class APIStore {
         if (index > -1) {
           state.rows.splice(index, 1)
         }
+        state.currentID = -1
         return state
       },
       format(state, format) {
@@ -170,27 +173,98 @@ class InstrumentMain extends React.Component {
   render() {
     return (
       <InstrumentIndex 
-        currentID={this.props.p.currentID}
-        instruments={props.rows}
-        actions={props.actions}
-        timeouts={props.timeouts}
-        type={props.type}
-        timer={props.timer}
-        format={props.format}
+        currentID={this.props.store.currentID}
+        instruments={this.props.store.rows}
+        actions={this.props.store.actions}
+        timeouts={this.props.store.timeouts}
+        type={this.props.store.type}
+        timer={this.props.store.timer}
+        format={this.props.store.format}
       />
     )
   }
 }
 
+class About extends React.Component {
+  render() {
+    return (
+      <div>
+        Hello! This is the About page! :-)
+      </div>
+    )
+  }
+}
+
+function createRouter(routes) {
+  const router = new Router5()
+    .setOption('useHash', true)
+    .setOption('defaultRoute', 'instruments')
+    .addNode('instruments_home', '/instruments')
+    .addNode('instruments', '/instruments/:id')
+    .addNode('about', '/about')
+    .usePlugin(Router5.loggerPlugin())
+    .usePlugin(historyPlugin())
+    .start()
+  return router
+}
+
+class Nav extends React.Component {
+  render() {
+    return (
+      <div className="nav">
+        <a onClick={
+            this.props.router.navigate(
+              'about',
+              {section: 'about'},
+              {reload: true}
+            )
+          }
+        >
+        about 
+        </a>
+        <a onClick={
+            this.props.router.navigate(
+              'instruments_home',
+              {section: 'instruments_home'},
+              {reload: true}
+            )
+          }
+        >
+        instruments
+        </a>
+      </div>
+    )
+  }
+}
+
+function App(props) {
+  console.log(props)
+  return (
+    <div>
+      <Nav router={props.router}/>
+      <Main store={props.store} router={props.router}/>
+    </div>
+  )
+}
+
+function Main(props) {
+  console.log(props)
+  console.log(props.router.getLocation())
+  return (
+    <InstrumentMain store={props.store}/>
+  )
+}
+
 let apiStore = new APIStore()
-apiStore.store.getState((props) => {
+const router = createRouter()
+apiStore.store.getState((store) => {
+  const wrappedApp = (
+    <RouterProvider router={router}>
+      <App store={store} router={router}/>
+    </RouterProvider>
+  )
+  
   ReactDOM.render(
-    (
-      <Router>
-        <Route path="/" component={InstrumentMain}
-          p={props}/>
-      </Router>
-    ),
-    document.getElementById('container')
+    wrappedApp, document.getElementById("container")
   )
 })
