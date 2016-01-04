@@ -1,8 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router5 } from 'router5'
-import { RouterProvider } from 'react-router5';
-import historyPlugin from 'router5-history';
+import { RouterProvider } from 'react-router5'
+import listenersPlugin from 'router5-listeners'
+import historyPlugin from 'router5-history'
 import Hoverboard from "hoverboard"
 import promise from 'stackp/promisejs/promise.js'
 import _ from 'lodash'
@@ -17,6 +18,10 @@ class APIStore {
     this.store = Hoverboard({
       init(state, init_state) {
         return init_state
+      },
+      setPath(state, path) {
+        state.path = path
+        return state
       },
       destroy(state, id) {
         let index = state.type.indexFromID(
@@ -82,6 +87,8 @@ class APIStore {
         indexFromID: this.type.indexFromID,
         prerender: this.type.prerender,
         format: this.store.format,
+        unsubscribe: this.stopUpdating.bind(this),
+        subscribe: this.startUpdating.bind(this)
       },
       timeouts: {
         pauseUpdates: undefined,
@@ -90,10 +97,15 @@ class APIStore {
       type: this.type,
       format: true
     })
-    setInterval(
+    this.triggerUpdateFromServer()
+  }
+  startUpdating() {
+    this.timerID = setInterval(
       this.triggerUpdateFromServer.bind(this), 1000
     )
-    this.triggerUpdateFromServer()
+  }
+  stopUpdating() {
+    clearInterval(this.timerID)
   }
   createRow() {
     promise.post(
@@ -121,13 +133,13 @@ class APIStore {
     this.store.destroy(id)
   }
   scheduleUpdate(target) {
-    let state = apiStore.store()
+    let state = this.store()
     if (!state.timer) {
       let timerID = setTimeout(() => {
         this.update(target)
-        apiStore.store.setTimer(undefined)
+        this.store.setTimer(undefined)
       }, 1000)
-      apiStore.store.setTimer(timerID)
+      this.store.setTimer(timerID)
     }
   }
   handleUpdateFromServer(index, error, data) {
@@ -141,6 +153,7 @@ class APIStore {
     this.store.rows(validated, index)
   }
   triggerUpdateFromServer(index) {
+    console.log("sending update")
     if (!this.store().timer) {
       this.readAll()
         .then(
@@ -170,6 +183,12 @@ class APIStore {
 }
 
 class InstrumentMain extends React.Component {
+  componentWillUnmount() {
+    this.props.store.actions.unsubscribe()
+  }
+  componentDidMount() {
+    this.props.store.actions.subscribe()
+  }
   render() {
     return (
       <InstrumentIndex 
@@ -195,7 +214,7 @@ class About extends React.Component {
   }
 }
 
-function createRouter(routes) {
+function createRouter() {
   const router = new Router5()
     .setOption('useHash', true)
     .setOption('defaultRoute', 'instruments')
@@ -204,7 +223,7 @@ function createRouter(routes) {
     .addNode('about', '/about')
     .usePlugin(Router5.loggerPlugin())
     .usePlugin(historyPlugin())
-    .start()
+    .usePlugin(listenersPlugin())
   return router
 }
 
@@ -213,21 +232,27 @@ class Nav extends React.Component {
     return (
       <div className="nav">
         <a onClick={
-            this.props.router.navigate(
-              'about',
-              {section: 'about'},
-              {reload: true}
-            )
+            (e) => {
+              this.props.router.navigate(
+                'about',
+                {},
+                {reload: true},
+                () => {}
+              )
+            }
           }
         >
-        about 
+        about
         </a>
         <a onClick={
-            this.props.router.navigate(
-              'instruments_home',
-              {section: 'instruments_home'},
-              {reload: true}
-            )
+            (e) => {
+              this.props.router.navigate(
+                'instruments_home',
+                {},
+                {reload: true},
+                () => {}
+              )
+            }
           }
         >
         instruments
@@ -238,33 +263,46 @@ class Nav extends React.Component {
 }
 
 function App(props) {
-  console.log(props)
   return (
     <div>
       <Nav router={props.router}/>
-      <Main store={props.store} router={props.router}/>
+      <Main 
+        router={props.router} 
+        store={props.store}
+        unsubscribe={props.unsubscribe}
+      />
     </div>
   )
 }
 
 function Main(props) {
-  console.log(props)
-  console.log(props.router.getLocation())
+  let current_location = props.store.path
+  let element = 
+    current_location === 
+      "/about" ? 
+        <About/> : <InstrumentMain 
+          store={props.store}
+        />
   return (
-    <InstrumentMain store={props.store}/>
+    element
   )
 }
 
-let apiStore = new APIStore()
-const router = createRouter()
-apiStore.store.getState((store) => {
-  const wrappedApp = (
-    <RouterProvider router={router}>
-      <App store={store} router={router}/>
-    </RouterProvider>
-  )
-  
-  ReactDOM.render(
-    wrappedApp, document.getElementById("container")
-  )
+
+let api = new APIStore()
+let router = createRouter(api)
+let apiRouter = router.addListener((toState) => {
+  api.store.setPath(toState.path)
+})
+router.start((err, state) => {
+  api.store.setPath(state.path)
+  api.store.getState((new_store) => {
+    ReactDOM.render(
+      <App 
+        router={router} 
+        store={new_store}
+      />,
+      document.getElementById("container")
+    )
+  })
 })

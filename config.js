@@ -27,6 +27,7 @@ System.config({
     "react-router5": "npm:react-router5@1.0.1",
     "router5": "npm:router5@1.3.0",
     "router5-history": "npm:router5-history@1.0.1",
+    "router5-listeners": "npm:router5-listeners@1.0.0",
     "stackp/promisejs": "github:stackp/promisejs@master",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
@@ -489,6 +490,15 @@ System.config({
       "fs": "github:jspm/nodelibs-fs@0.1.2",
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
+      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+    },
+    "npm:router5-listeners@1.0.0": {
+      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
+      "child_process": "github:jspm/nodelibs-child_process@0.1.0",
+      "fs": "github:jspm/nodelibs-fs@0.1.2",
+      "path": "github:jspm/nodelibs-path@0.1.0",
+      "process": "github:jspm/nodelibs-process@0.1.2",
+      "router5.transition-path": "npm:router5.transition-path@1.0.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:router5@1.3.0": {
