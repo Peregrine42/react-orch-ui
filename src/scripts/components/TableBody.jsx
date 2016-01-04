@@ -1,4 +1,5 @@
 import React from "react"
+import classNames from "classnames"
 
 export default class TableBody extends React.Component {
   handleClick(id) {
@@ -28,7 +29,13 @@ export default class TableBody extends React.Component {
           >
             <td>{row.name}</td>
             <td>{row.formattedPrice}</td>
-            <td>{this.stockLevels(row)}</td>
+            <td 
+              className={classNames(
+                {error: row.inStock < 0 }
+              )}
+            >
+              {this.stockLevels(row)}
+            </td>
             <td>
               <input 
                 type="button"

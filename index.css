@@ -13,3 +13,7 @@
 .horizontal {
   display: inline-block;
 }
+
+.error {
+  color: red;
+}

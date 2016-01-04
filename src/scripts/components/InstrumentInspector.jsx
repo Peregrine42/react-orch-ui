@@ -1,5 +1,5 @@
 import React from "react"
-import ReactDOM from "react-dom"
+import classNames from "classnames"
 
 class HideableInput extends React.Component {
   constructor(...args) {
@@ -48,13 +48,15 @@ class MutableField extends React.Component {
   
   render() {
     let name = this.props.name
+    let formattedName = 
+      this.props.formattedName || name
     let current = this.props.current
     let handleChange = this.props.handleChange
     let unit = this.props.unit || ""
     let input = !this.state.active ?
         <div/> : <HideableInput 
           active={this.state.active}
-          focusedValue={this.state.focusedValue}
+          focusedValue={current[formattedName]}
           handleBlur={
             () => { 
               this.state.active = false
@@ -63,28 +65,29 @@ class MutableField extends React.Component {
           }
           handleChange={handleChange}
           name={this.props.name}
+          current={current}
         />
     return (
       <div>
-      <div className="horizontal">
-        <label htmlFor={name}>{name + ": "}</label>
-        <span 
-          className={
-            !this.state.active ? "show" : "hide"
-          }
-          onClick={
-            (e) => {
-              this.state.active = true
-              this.state.focusedValue = current[name]
-              this.props.actions.setSelected(name)
+        <div className="horizontal">
+          <label htmlFor={name}>{name + ": "}</label>
+          <span 
+            className={
+              !this.state.active ? "show" : "hide"
             }
-          }
-          >
-          {unit + current[name]}
-        </span>
-        {input}
+            onClick={
+              (e) => {
+                this.state.active = true
+                this.state.focusedValue = current[name]
+                this.props.actions.setSelected(name)
+              }
+            }
+            >
+            {unit + current[formattedName]}
+          </span>
+          {input}
+        </div>
       </div>
-    </div>
     )
   }
 }
@@ -111,6 +114,10 @@ class InstrumentInspector extends React.Component {
       if (value > target.amount) {
         return false
       }
+    }
+    if (label === "price") {
+      value = value.replace(/,/g, "")
+      value = parseFloat(value)
     }
     this.delayedChange(
       label, value
@@ -168,14 +175,21 @@ class InstrumentInspector extends React.Component {
         />
         <MutableField 
           name="price"
+          formattedName="formattedPrice"
           current={current}
           unit="£"
           handleChange={this.handleChange.bind(this)}
           actions={actions}
         />
         <div>
-          <label htmlFor="inStock">in stock:</label>
-          <span> {current.inStock}</span>
+          <label htmlFor="inStock">in stock: </label>
+          <span className=
+            {classNames(
+              {error: current.inStock < 0 }
+            )}
+          >
+            {current.inStock}
+          </span>
         </div>
       </div>
     )

@@ -1,6 +1,13 @@
 import _ from 'lodash'
 
 export default class Instrument {
+  static numberWithCommas(x) {
+    var parts = x.toString().split(".");
+    parts[0] = 
+      parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return parts.join(".");
+  }
+
   static valid(data) {
     return {
       id: data.id,
@@ -18,7 +25,9 @@ export default class Instrument {
     instrument.inStock = 
       instrument.amount - instrument.reserved
     let price = parseFloat(instrument.price)
-    instrument.formattedPrice = price.toFixed(2)
+      .toFixed(2)
+    let string = Instrument.numberWithCommas(price)
+    instrument.formattedPrice = string
     return instrument
   }
   static baseURL() {
@@ -36,7 +45,8 @@ export default class Instrument {
     return rows[index] || false
   }
   static update(rows, newData) {
-    let oldData = Instrument.findByID(newData.id, rows)
+    let oldData = Instrument
+      .findByID(newData.id, rows)
     if (!oldData) { return newData }
     return (_.extend(newData, oldData, 
       (v, o) => {

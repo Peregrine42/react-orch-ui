@@ -14,6 +14,7 @@
   },
   "jspm": {
     "dependencies": {
+      "classnames": "npm:classnames@^2.2.2",
       "hoverboard": "npm:hoverboard@^3.0.0-alpha",
       "jquery": "github:components/jquery@^2.1.4",
       "jsx": "github:floatdrop/plugin-jsx@^1.1.0",

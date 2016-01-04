@@ -17,6 +17,7 @@ System.config({
   map: {
     "babel": "npm:babel-core@5.8.34",
     "babel-runtime": "npm:babel-runtime@5.8.34",
+    "classnames": "npm:classnames@2.2.2",
     "core-js": "npm:core-js@1.2.6",
     "hoverboard": "npm:hoverboard@3.0.0-alpha",
     "jquery": "github:components/jquery@2.1.4",
