@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Router, Route, Link } from 'react-router'
 import Hoverboard from "hoverboard"
 import promise from 'stackp/promisejs/promise.js'
 import _ from 'lodash'
@@ -165,18 +166,31 @@ class APIStore {
   }
 }
 
+class InstrumentMain extends React.Component {
+  render() {
+    return (
+      <InstrumentIndex 
+        currentID={this.props.p.currentID}
+        instruments={props.rows}
+        actions={props.actions}
+        timeouts={props.timeouts}
+        type={props.type}
+        timer={props.timer}
+        format={props.format}
+      />
+    )
+  }
+}
+
 let apiStore = new APIStore()
 apiStore.store.getState((props) => {
   ReactDOM.render(
-    <InstrumentIndex 
-      currentID={props.currentID}
-      instruments={props.rows}
-      actions={props.actions}
-      timeouts={props.timeouts}
-      type={props.type}
-      timer={props.timer}
-      format={props.format}
-    />,
+    (
+      <Router>
+        <Route path="/" component={InstrumentMain}
+          p={props}/>
+      </Router>
+    ),
     document.getElementById('container')
   )
 })
