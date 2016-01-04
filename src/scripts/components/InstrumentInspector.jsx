@@ -1,17 +1,99 @@
 import React from "react"
+import ReactDOM from "react-dom"
+
+class HideableInput extends React.Component {
+  constructor(...args) {
+    super(...args)
+    this.state = {
+      focusedValue: this.props.focusedValue
+    }
+  }
+  handleFocus(e) {
+    e.target.select()
+  }
+  handleBlur(e) {
+    this.props.handleBlur()
+  }
+  handleChange(e) {
+    let name = this.props.name
+    let current = this.props.current
+    this.props.handleChange(name, current, e)
+  }
+  render() {
+    return (
+      <input autoFocus
+        type="text" id={name}
+        onChange={(e) => {
+          this.state.focusedValue = e.target.value
+          this.handleChange(e)
+        }}
+        className={
+          this.props.active ? "show" : "hide"
+        }
+        onBlur={this.handleBlur.bind(this)}
+        onFocus={this.handleFocus.bind(this)}
+        value={this.state.focusedValue}
+      />
+    )
+  }
+}
+class MutableField extends React.Component {
+  constructor(...args) {
+    super(...args)
+    this.state = {
+      active: false,
+      focusedValue: ""
+    }
+  }
+  
+  render() {
+    let name = this.props.name
+    let current = this.props.current
+    let handleChange = this.props.handleChange
+    let unit = this.props.unit || ""
+    let input = !this.state.active ?
+        <div/> : <HideableInput 
+          active={this.state.active}
+          focusedValue={this.state.focusedValue}
+          handleBlur={
+            () => { 
+              this.state.active = false
+              this.props.actions.setSelected(null)
+            }
+          }
+          handleChange={handleChange}
+          name={this.props.name}
+        />
+    return (
+      <div>
+      <div className="horizontal">
+        <label htmlFor={name}>{name + ": "}</label>
+        <span 
+          className={
+            !this.state.active ? "show" : "hide"
+          }
+          onClick={
+            (e) => {
+              this.state.active = true
+              this.state.focusedValue = current[name]
+              this.props.actions.setSelected(name)
+            }
+          }
+          >
+          {unit + current[name]}
+        </span>
+        {input}
+      </div>
+    </div>
+    )
+  }
+}
 
 class InstrumentInspector extends React.Component {
   handleChange(label, target, e) {
     e.preventDefault()
     e.stopPropagation()
     let value = e.target.value
-    if (label === "price") { 
-      this.props.actions.format(false)
-      value = parseFloat(value)
-      if (!value || value <= 0) {
-        value = 0
-      }
-    }
     if (label === "amount") {
       value = parseInt(value)
       if (!value || value <= 0) {
@@ -47,82 +129,50 @@ class InstrumentInspector extends React.Component {
     this.props.actions.updateRow(target.id, target)
   }
   price(row) {
-    if (this.props.format) { 
-      return row.formattedPrice 
-    } 
-    else { 
-      return row.price 
-    }
+    return row.formattedPrice 
   }
   render() {
     let id = this.props.currentID
     let actions = this.props.actions
-    let current = actions.findByID(id, this.props.rows)
+    let current = actions.findByID(
+      id, this.props.rows
+    )
     if (!current) {
       return <div/>
     }
     return(
       <div>
-        <div>
-          <label htmlFor="name">name:</label>
-          <input 
-            type="text" id="name" 
-            value={current.name}
-            onChange={
-              this.handleChange.bind(
-                this, "name", current
-              )
-            }
-          />
-        </div>
-        <div>
-          <label htmlFor="name">description:</label>
-          <input 
-            type="text" id="description"
-            value={current.description}
-            onChange={
-              this.handleChange.bind(
-                this, "description", current
-              )
-            }
-          />
-        </div>
-        <div>
-          <label htmlFor="price">price (£):</label>
-          <input 
-            type="text" id="price"
-            value={this.price(current)}
-            onChange={
-              this.handleChange.bind(
-                this, "price", current
-              )
-            }
-          />
-        </div>
-        <div>
-          <label htmlFor="amount">amount:</label>
-          <input 
-            type="amount" id="amount"
-            value={current.amount}
-            onChange={
-              this.handleChange.bind(
-                this, "amount", current
-              )
-            }
-          />
-        </div>
-        <div>
-          <label htmlFor="name">reserved:</label>
-          <input 
-            type="text" id="reserved"
-            value={current.reserved}
-            onChange={
-              this.handleChange.bind(
-                this, "reserved", current
-              )
-            }
-          />
-        </div>
+        <MutableField 
+          name="name" 
+          current={current}
+          handleChange={this.handleChange.bind(this)}
+          actions={actions}
+        />
+        <MutableField 
+          name="description" 
+          current={current}
+          handleChange={this.handleChange.bind(this)}
+          actions={actions}
+        />
+        <MutableField 
+          name="amount" 
+          current={current}
+          handleChange={this.handleChange.bind(this)}
+          actions={actions}
+        />
+        <MutableField 
+          name="reserved" 
+          current={current}
+          handleChange={this.handleChange.bind(this)}
+          actions={actions}
+        />
+        <MutableField 
+          name="price"
+          current={current}
+          unit="£"
+          handleChange={this.handleChange.bind(this)}
+          actions={actions}
+        />
         <div>
           <label htmlFor="inStock">in stock:</label>
           <span> {current.inStock}</span>

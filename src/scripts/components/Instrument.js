@@ -41,7 +41,7 @@ export default class Instrument {
     return (_.extend(newData, oldData, 
       (v, o) => {
         return _.isUndefined(v) || 
-          parseFloat(o) === parseFloat(v) ? o : v
+          parseFloat(o) == parseFloat(v) ? o : v
       })
     )
   }

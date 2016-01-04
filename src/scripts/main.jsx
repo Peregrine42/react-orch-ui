@@ -19,6 +19,10 @@ class APIStore {
       init(state, init_state) {
         return init_state
       },
+      setSelected(state, selected) {
+        state.selected = selected
+        return state
+      },
       setPath(state, path) {
         state.path = path
         return state
@@ -75,10 +79,10 @@ class APIStore {
       rows: [],
       actions: {
         createRow: this.createRow.bind(this),
-        readAll: this.readAll,
-        update: this.update,
+        readAll: this.readAll.bind(this),
+        update: this.update.bind(this),
         destroy: this.destroy.bind(this),
-        scheduleUpdate: this.scheduleUpdate,
+        scheduleUpdate: this.scheduleUpdate.bind(this),
         setID: this.setID.bind(this),
         rows: this.store.rows,
         updateRow: this.store.updateRow,
@@ -88,7 +92,8 @@ class APIStore {
         prerender: this.type.prerender,
         format: this.store.format,
         unsubscribe: this.stopUpdating.bind(this),
-        subscribe: this.startUpdating.bind(this)
+        subscribe: this.startUpdating.bind(this),
+        setSelected: this.store.setSelected
       },
       timeouts: {
         pauseUpdates: undefined,
@@ -101,7 +106,7 @@ class APIStore {
   }
   startUpdating() {
     this.timerID = setInterval(
-      this.triggerUpdateFromServer.bind(this), 1000
+      this.triggerUpdateFromServer.bind(this), 1500
     )
   }
   stopUpdating() {
@@ -153,7 +158,6 @@ class APIStore {
     this.store.rows(validated, index)
   }
   triggerUpdateFromServer(index) {
-    console.log("sending update")
     if (!this.store().timer) {
       this.readAll()
         .then(
