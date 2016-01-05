@@ -9,9 +9,10 @@ export default class TableHeader extends React.Component {
     return (
       <thead>
         <tr>
+          <th>id</th>
           <th>name</th>
           <th>price (£)</th>
-          <th>in stock (reserved)</th>
+          <th>available (reserved)</th>
         </tr>
       </thead>
     )

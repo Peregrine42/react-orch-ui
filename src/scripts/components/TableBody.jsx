@@ -27,6 +27,7 @@ export default class TableBody extends React.Component {
             key={row.id} 
             onClick={this.handleClick.bind(this, row.id)}
           >
+            <td>{row.id}</td>
             <td>{row.name}</td>
             <td>{row.formattedPrice}</td>
             <td 

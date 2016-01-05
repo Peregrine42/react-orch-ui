@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { Router5 } from 'router5'
-import { RouterProvider } from 'react-router5'
+import { RouteNode } from 'router5'
 import listenersPlugin from 'router5-listeners'
 import historyPlugin from 'router5-history'
 import Hoverboard from "hoverboard"
@@ -23,8 +23,9 @@ class APIStore {
         state.selected = selected
         return state
       },
-      setPath(state, path) {
-        state.path = path
+      setPath(state, path, params) {
+        state.params = params || state.params
+        state.path = path || state.path
         return state
       },
       destroy(state, id) {
@@ -203,6 +204,7 @@ class InstrumentMain extends React.Component {
         type={this.props.store.type}
         timer={this.props.store.timer}
         format={this.props.store.format}
+        params={this.props.store.params}
       />
     )
   }
@@ -218,16 +220,21 @@ class About extends React.Component {
   }
 }
 
-function createRouter() {
-  const router = new Router5()
+function createRouter(api) {
+  let router = new Router5([
+    new RouteNode('about', '/about'),
+    new RouteNode('instruments', '/instruments', [
+      new RouteNode('instrument_show', '/:id')
+    ])
+  ])
     .setOption('useHash', true)
     .setOption('defaultRoute', 'instruments')
-    .addNode('instruments_home', '/instruments')
-    .addNode('instruments', '/instruments/:id')
-    .addNode('about', '/about')
     .usePlugin(Router5.loggerPlugin())
     .usePlugin(historyPlugin())
     .usePlugin(listenersPlugin())
+    .addListener((toState) => {
+      api.store.setPath(toState.path, toState.params)
+    })
   return router
 }
 
@@ -251,10 +258,10 @@ class Nav extends React.Component {
         <a onClick={
             (e) => {
               this.props.router.navigate(
-                'instruments_home',
+                'instruments',
                 {},
                 {reload: true},
-                () => {}
+                (err, state) => {}
               )
             }
           }
@@ -286,6 +293,7 @@ function Main(props) {
       "/about" ? 
         <About/> : <InstrumentMain 
           store={props.store}
+          router={props.router}
         />
   return (
     element
@@ -295,15 +303,16 @@ function Main(props) {
 
 let api = new APIStore()
 let router = createRouter(api)
-let apiRouter = router.addListener((toState) => {
-  api.store.setPath(toState.path)
-})
 router.start((err, state) => {
-  api.store.setPath(state.path)
   api.store.getState((new_store) => {
+    new_store.path = state.path
+    new_store.params = state.params
+    console.log(state)
+    new_store.currentID = state.params.id
+    console.log(new_store)
     ReactDOM.render(
       <App 
-        router={router} 
+        router={router}
         store={new_store}
       />,
       document.getElementById("container")
