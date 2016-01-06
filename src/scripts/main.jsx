@@ -1,10 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Router5 } from 'router5'
-import { RouteNode } from 'router5'
-import listenersPlugin from 'router5-listeners'
-import historyPlugin from 'router5-history'
 import Hoverboard from "hoverboard"
+import page from "page"
 import promise from 'stackp/promisejs/promise.js'
 import _ from 'lodash'
 
@@ -220,50 +217,18 @@ class About extends React.Component {
   }
 }
 
-function createRouter(api) {
-  let router = new Router5([
-    new RouteNode('about', '/about'),
-    new RouteNode('instruments', '/instruments', [
-      new RouteNode('instrument_show', '/:id')
-    ])
-  ])
-    .setOption('useHash', true)
-    .setOption('defaultRoute', 'instruments')
-    .usePlugin(Router5.loggerPlugin())
-    .usePlugin(historyPlugin())
-    .usePlugin(listenersPlugin())
-    .addListener((toState) => {
-      api.store.setPath(toState.path, toState.params)
-    })
-  return router
-}
-
 class Nav extends React.Component {
   render() {
     return (
       <div className="nav">
         <a onClick={
-            (e) => {
-              this.props.router.navigate(
-                'about',
-                {},
-                {reload: true},
-                () => {}
-              )
-            }
+            (e) => { }
           }
         >
         about
         </a>
         <a onClick={
-            (e) => {
-              this.props.router.navigate(
-                'instruments',
-                {},
-                {reload: true},
-                (err, state) => {}
-              )
-            }
+            (e) => { }
           }
         >
         instruments
@@ -276,9 +241,7 @@ class Nav extends React.Component {
 function App(props) {
   return (
     <div>
-      <Nav router={props.router}/>
       <Main 
-        router={props.router} 
         store={props.store}
         unsubscribe={props.unsubscribe}
       />
@@ -293,7 +256,6 @@ function Main(props) {
       "/about" ? 
         <About/> : <InstrumentMain 
           store={props.store}
-          router={props.router}
         />
   return (
     element
@@ -302,20 +264,11 @@ function Main(props) {
 
 
 let api = new APIStore()
-let router = createRouter(api)
-router.start((err, state) => {
-  api.store.getState((new_store) => {
-    new_store.path = state.path
-    new_store.params = state.params
-    console.log(state)
-    new_store.currentID = state.params.id
-    console.log(new_store)
-    ReactDOM.render(
-      <App 
-        router={router}
-        store={new_store}
+api.store.getState((new_store) => {
+  ReactDOM.render(
+    <App 
+      store={new_store}
       />,
-      document.getElementById("container")
-    )
-  })
+    document.getElementById("container")
+  )
 })

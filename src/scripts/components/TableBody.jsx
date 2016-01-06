@@ -38,15 +38,13 @@ export default class TableBody extends React.Component {
               {this.stockLevels(row)}
             </td>
             <td>
-              <input 
-                type="button"
+              <a
                 onClick={
                   this.destroy.bind(
                     this, row.id
                   )
                 }
-                value="delete"
-              ></input>
+              >delete</a>
             </td>
           </tr>
         )

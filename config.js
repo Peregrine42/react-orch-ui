@@ -23,12 +23,10 @@ System.config({
     "jquery": "github:components/jquery@2.1.4",
     "jsx": "github:floatdrop/plugin-jsx@1.1.0",
     "lodash": "npm:lodash@3.10.1",
+    "page": "npm:page@1.6.4",
     "react": "npm:react@0.14.5",
     "react-dom": "npm:react-dom@0.14.5",
     "react-router5": "npm:react-router5@1.0.1",
-    "router5": "npm:router5@1.3.0",
-    "router5-history": "npm:router5-history@1.0.1",
-    "router5-listeners": "npm:router5-listeners@1.0.0",
     "stackp/promisejs": "github:stackp/promisejs@master",
     "github:floatdrop/plugin-jsx@1.1.0": {
       "react-tools": "npm:react-tools@0.13.3"
@@ -375,6 +373,10 @@ System.config({
     "npm:os-browserify@0.1.2": {
       "os": "github:jspm/nodelibs-os@0.1.0"
     },
+    "npm:page@1.6.4": {
+      "path-to-regexp": "npm:path-to-regexp@1.2.1",
+      "process": "github:jspm/nodelibs-process@0.1.2"
+    },
     "npm:parse-asn1@5.0.0": {
       "asn1.js": "npm:asn1.js@4.2.1",
       "browserify-aes": "npm:browserify-aes@1.0.5",
@@ -396,6 +398,9 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
+    },
+    "npm:path-to-regexp@1.2.1": {
+      "isarray": "npm:isarray@0.0.1"
     },
     "npm:pbkdf2@3.0.4": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.0",
@@ -484,22 +489,6 @@ System.config({
       "path": "github:jspm/nodelibs-path@0.1.0",
       "path-parser": "npm:path-parser@0.4.4",
       "process": "github:jspm/nodelibs-process@0.1.2",
-      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
-    },
-    "npm:router5-history@1.0.1": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2",
-      "systemjs-json": "github:systemjs/plugin-json@0.1.0"
-    },
-    "npm:router5-listeners@1.0.0": {
-      "buffer": "github:jspm/nodelibs-buffer@0.1.0",
-      "child_process": "github:jspm/nodelibs-child_process@0.1.0",
-      "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "path": "github:jspm/nodelibs-path@0.1.0",
-      "process": "github:jspm/nodelibs-process@0.1.2",
-      "router5.transition-path": "npm:router5.transition-path@1.0.1",
       "systemjs-json": "github:systemjs/plugin-json@0.1.0"
     },
     "npm:router5@1.3.0": {

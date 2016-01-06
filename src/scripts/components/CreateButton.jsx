@@ -4,12 +4,10 @@ export default class CreateButton extends React.Component {
   render() {
     return (
       <div>
-        <input 
-          type="button"
+        <a
           onClick={this.props.actions.createRow}
-          value="create"
         >
-        </input>
+        create</a>
       </div>
     )
   }
