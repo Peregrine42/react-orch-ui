@@ -10,8 +10,9 @@ html {
 }
 
 .inspector {
+  animation: new-item-animation .3s linear forwards;
   position: relative;
-  top: 35px;
+  top: -125px;
   width: 400px;
   padding: 10px;
   height: 180px;
@@ -108,7 +109,11 @@ html {
 }
 
 .expanded {
-  top: 160px;
+  animation: new-item-animation .3s linear forwards;
+}
+
+.expanded-scale {
+  animation: new-item-animation2 .3s linear forwards;
 }
 
 /* taken from skeleton.css */
