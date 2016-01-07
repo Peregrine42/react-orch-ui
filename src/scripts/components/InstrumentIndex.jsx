@@ -1,7 +1,5 @@
 import React from "react"
 import InstrumentTable from './InstrumentTable.jsx!'
-import InstrumentInspector 
-  from './InstrumentInspector.jsx!'
 import CreateButton from './CreateButton.jsx!'
 
 class InstrumentIndex extends React.Component {
@@ -13,19 +11,16 @@ class InstrumentIndex extends React.Component {
       <div>
         <CreateButton
           actions={this.props.actions}
+          instruments={instruments}
+          currentID={this.props.currentID} 
+          type={this.props.type}
+          timer={this.props.timer}
+          format={this.props.format}
         />
         <InstrumentTable 
           currentID={this.props.currentID} 
           instruments={instruments}
           actions={this.props.actions}
-        />
-        <InstrumentInspector 
-          currentID={this.props.currentID} 
-          rows={instruments}
-          actions={this.props.actions}
-          type={this.props.type}
-          timer={this.props.timer}
-          format={this.props.format}
         />
       </div>
     )

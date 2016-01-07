@@ -88,6 +88,7 @@ class APIStore {
         findByID: this.type.findByID,
         indexFromID: this.type.indexFromID,
         prerender: this.type.prerender,
+        setCurrentID: this.store.setCurrentID,
         format: this.store.format,
         unsubscribe: this.stopUpdating.bind(this),
         subscribe: this.startUpdating.bind(this),

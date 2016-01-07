@@ -23,7 +23,7 @@ export default class TableBody extends React.Component {
     let rows = this.props.rows
       .map((row) => {
         return (
-          <tr 
+          <tr className="clickable"
             key={row.id} 
             onClick={this.handleClick.bind(this, row.id)}
           >
@@ -38,13 +38,17 @@ export default class TableBody extends React.Component {
               {this.stockLevels(row)}
             </td>
             <td>
-              <a
+              <span className="error btn clickable"
                 onClick={
                   this.destroy.bind(
                     this, row.id
                   )
                 }
-              >delete</a>
+                >
+                <i className="fa fa-trash"
+                >
+                </i>
+              </span>
             </td>
           </tr>
         )

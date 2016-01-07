@@ -13,6 +13,7 @@ export default class TableHeader extends React.Component {
           <th>name</th>
           <th>price (£)</th>
           <th>available (reserved)</th>
+          <th></th>
         </tr>
       </thead>
     )

@@ -69,11 +69,11 @@ class MutableField extends React.Component {
         />
     return (
       <div>
-        <div className="horizontal">
+        <div className="horizontal detail">
           <label htmlFor={name}>{name + ": "}</label>
           <span 
             className={
-              !this.state.active ? "show" : "hide"
+              !this.state.active ? "show clickable" : "hide clickable"
             }
             onClick={
               (e) => {
@@ -148,7 +148,7 @@ class InstrumentInspector extends React.Component {
       return <div/>
     }
     return(
-      <div>
+      <div className="inspector">
         <MutableField 
           name="name" 
           current={current}
@@ -181,17 +181,24 @@ class InstrumentInspector extends React.Component {
           handleChange={this.handleChange.bind(this)}
           actions={actions}
         />
-        <div>
-          <label htmlFor="inStock">in stock: </label>
-          <span className=
-            {classNames(
-              {error: current.inStock < 0 }
-            )}
-          >
-            {current.inStock}
-          </span>
-        </div>
+      <div className="detail">
+        <label htmlFor="inStock">in stock: </label>
+        <span className=
+          {classNames(
+            {error: current.inStock < 0 }
+          )}
+        >
+          {current.inStock}
+        </span>
       </div>
+      <div className="detail clickable">
+        <span
+          onClick={
+            this.props.actions.setCurrentID.bind(null, -1)
+          }
+        ><i className="fa fa-caret-up"></i> hide</span>
+      </div>
+    </div>
     )
   }
 }
