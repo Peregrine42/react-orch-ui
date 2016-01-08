@@ -8,12 +8,12 @@ export default class CreateButton extends React.Component {
       <div>
         <div className="sticky table header panel">
           <ul className="header panel">
-            <li className="header-element clickable"><a className="nav-link" href="/about.html">Orch</a></li>
-            <li className="header-element clickable"><a className="nav-link" href="/index.html">orders</a></li>
+            <li className="header-element clickable"><a className="nav-link" href="/about.html">orch</a></li>
+            <li className="header-element clickable"><a className="nav-link" href="/index.html">instruments</a></li>
             <li className="header-element clickable"
               onClick={this.props.actions.createRow}
             >
-              New Instrument
+              new instrument
             </li>
           </ul>
           <InstrumentInspector 

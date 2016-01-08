@@ -130,12 +130,12 @@ html {
 }
 
 tr:nth-child(even) {
-  background-color: rgb(241, 240, 233)
+  background-color: mocassin;
 }
 
 
 tr:nth-child(odd) {
-  background-color: white;
+  background-color: tan;
 }
 
 .header {
