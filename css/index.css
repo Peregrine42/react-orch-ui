@@ -12,7 +12,7 @@ html {
 .inspector {
   position: relative;
   top: 35px;
-  width: 400px;
+  width: 100%;
   padding: 10px;
   height: 180px;
 }
